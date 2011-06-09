@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NBroadcast.Media
 {
-    public abstract class Medium<T> where T : IMedium
+    public abstract class Medium<T>
     {
         protected static Setup setup;
 
@@ -13,6 +13,8 @@ namespace NBroadcast.Media
 
         protected string GetVal(string key)
         {
+            EnsureSetup();
+
             try
             {
                 return setup[key].ToString();
@@ -25,6 +27,8 @@ namespace NBroadcast.Media
 
         protected string GetValOrBlank(string key)
         {
+            EnsureSetup();
+
             if (!HasSetup(key) || GetVal(key) == null)
                 return String.Empty;
 
@@ -33,12 +37,24 @@ namespace NBroadcast.Media
 
         protected int GetValInt(string key)
         {
+            EnsureSetup();
+
             return (int)setup[key];
         }
 
         protected bool GetValBool(string key)
         {
+            EnsureSetup();
+
             return (bool)setup[key];
+        }
+
+        protected void EnsureSetup()
+        {
+            if (setup == null)
+            {
+                throw new MediumSetupException();
+            }
         }
 
         protected bool HasSetup(string key)

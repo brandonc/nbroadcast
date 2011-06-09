@@ -33,23 +33,33 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Twitterizer2">
-      <HintPath>..\..\lib\Twitterizer2.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\IMediumExtensions.cs" />
-    <Compile Include="Media\EmailMedium.cs" />
-    <Compile Include="Media\IMedium.cs" />
-    <Compile Include="Media\Medium.cs" />
-    <Compile Include="Media\TwitterMedium.cs" />
+    <Compile Include="Media\Email.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Media\Facebook.cs" />
+    <Compile Include="Media\IMedium.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Media\Medium.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Media\OAuthMedium.cs" />
+    <Compile Include="Media\Twitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MediumSetupException.cs" />
     <Compile Include="Notice.cs" />
     <Compile Include="NoticeDispatchException.cs" />
+    <Compile Include="OAuth\OAuthBase.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

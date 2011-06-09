@@ -9,11 +9,33 @@ namespace NBroadcast
 {
     public class Notice
     {
-        private IMedium[] media;
         private TimeSpan delay;
         private Timer timer;
+        private string message;
+        private Type[] media;
 
-        public string Message { get; set; }
+        public bool MuteExceptions { get; set; }
+
+        public virtual string Message
+        {
+            get
+            {
+                return this.message;
+            }
+        }
+
+        public void SetMedia(params Type[] media)
+        {
+            if (media == null)
+                throw new ArgumentNullException("media");
+
+            this.media = media;
+        }
+
+        protected virtual Type[] GetMedia()
+        {
+            return this.media;
+        }
 
         public void Send()
         {
@@ -34,38 +56,38 @@ namespace NBroadcast
 
         private void SendImpl()
         {
-            foreach (IMedium m in this.media)
-            {
-                m.Dispatch(this.Message);
-            }
+            
+                foreach (Type tm in this.GetMedia())
+                {
+                    var m = (IMedium)Activator.CreateInstance(tm);
+                    try
+                    {
+                        m.Dispatch(this.Message);
+                    } catch (NoticeDispatchException)
+                    {
+                        if (!MuteExceptions)
+                            throw;
+                    }
+                }
+        }
+
+        public Notice Mute()
+        {
+            this.MuteExceptions = true;
+            return this;
         }
 
         public Notice Delay(TimeSpan delay)
         {
-            return new Notice(this, delay);
-        }
-
-        private Notice(Notice notice, TimeSpan delay)
-        {
-            this.media = notice.media;
             this.delay = delay;
+            return this;
         }
 
-        public Notice(string message, params Type[] media)
+        public Notice(string message)
         {
-            if (String.IsNullOrWhiteSpace(message))
-                throw new ArgumentNullException("message");
-
-            if (media == null || media.Length == 0)
-                throw new ArgumentNullException("media");
-
-            this.Message = message;
-            this.media = new IMedium[media.Length];
-
-            for (int index = 0; index < media.Length; index++)
-            {
-                this.media[index] = (IMedium)Activator.CreateInstance(media[index]);
-            }
+            this.message = message;
         }
+
+        protected Notice() { }
     }
 }
