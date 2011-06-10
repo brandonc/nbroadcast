@@ -47,6 +47,10 @@
     <MakeDir Directories="$(WuphfMergedOutputPath)" Condition="!EXISTS($(RekallMergedOutputPath))"/>
     <Message Text="Merging: @(MergeAsmWuphfConsole->'%(Filename)%(Extension)', ' and ') into $(WuphfMergedOutputPath)\wuphf.exe" />
     <Exec Command="&quot;$(ILMerge)&quot; /ndebug /targetplatform:v4,&quot;$(MSBuildBinPath)&quot; /target:exe /out:&quot;$(WuphfMergedOutputPath)\wuphf.exe&quot; @(MergeAsmWuphfConsole->'&quot;%(FullPath)&quot;', ' ') " />
+
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\src\Wuphf\app.config.example"
+        DestinationFiles="$(WuphfMergedOutputPath)\wuphf.exe.config"
+        ContinueOnError="false" />
   </Target>
 
   <!--Target Name="CopyToNugetPackage">
