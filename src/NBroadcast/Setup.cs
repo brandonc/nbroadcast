@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using System.Configuration;
+using NBroadcast.Configuration;
+using NBroadcast.Media;
+using System.Reflection;
 
 namespace NBroadcast
 {
@@ -17,6 +21,36 @@ namespace NBroadcast
 
         private Func<string[], string> makeRequiredMsg =
             (keys) => "The following keys are required for this setup: " + String.Join<string>(", ", keys);
+
+        public static void AutoConfig()
+        {
+            try
+            {
+                var section = (NBroadcastMediaConfigurationSection)ConfigurationManager.GetSection("nbroadcast");
+
+                foreach (MediumElement medium in section.Media)
+                {
+                    var mediumtype = Type.GetType("NBroadcast.Media." + medium.Name);
+                    var helperMethod = mediumtype.GetMethod("AutoConfigValueHelper", BindingFlags.Static | BindingFlags.NonPublic);
+                    var setupMethod = mediumtype.GetMethod("Setup", BindingFlags.Static | BindingFlags.Public);
+
+                    var setup = new Setup();
+                    foreach (KeyValueConfigurationElement el in medium.Config)
+                    {
+                        object value = el.Value;
+                        if (helperMethod != null)
+                            value = helperMethod.Invoke(null, new string[] { el.Key, el.Value });
+
+                        setup.Add(el.Key, value);
+                    }
+
+                    setupMethod.Invoke(null, new object[] { setup });
+                }
+            } catch
+            {
+                // NOP
+            }
+        }
 
         public void Add(string property, Func<object> value)
         {

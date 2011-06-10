@@ -1,0 +1,57 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
+  <PropertyGroup>
+    <BuildConfig>Release</BuildConfig>
+    <BinariesFolder>$(MSBuildProjectDirectory)\binaries</BinariesFolder>
+    <MergedOutputPath>$(MSBuildProjectDirectory)\binaries\merged</MergedOutputPath>
+    <WuphfMergedOutputPath>$(MSBuildProjectDirectory)\binaries\wuphf</WuphfMergedOutputPath>
+    <NugetPackageOutputPath>$(MSBuildProjectDirectory)\package\lib</NugetPackageOutputPath>
+    <NugetPackageToolsPath>$(MSBuildProjectDirectory)\package\tools</NugetPackageToolsPath>
+    <ILMerge>$(MSBuildProjectDirectory)\tools\ILMerge.exe</ILMerge>
+  </PropertyGroup>
+
+  <Target Name="Clean">
+    <MSBuild Projects="src\nbroadcast.sln" StopOnFirstFailure="true" Properties="Configuration=Release" BuildInParallel="true" Targets="Clean"/>
+    <RemoveDir Directories="$(BinariesFolder)" />
+  </Target>
+
+  <Target Name="Build">
+    <MSBuild Projects="src\nbroadcast.sln" StopOnFirstFailure="true" Properties="Configuration=Release" BuildInParallel="true" Targets="Rebuild" />
+  </Target>
+
+  <Target Name="CopyToBinFolder">
+    <ItemGroup>
+      <BinaryFiles Include="$(MSBuildProjectDirectory)\src\NBroadcast\bin\$(BuildConfig)\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BinaryFiles)"
+        DestinationFolder="$(BinariesFolder)"
+        ContinueOnError="false" />
+  </Target>
+
+  <Target Name="Merge">
+    <ItemGroup>
+      <MergeAsm Include="$(MSBuildProjectDirectory)\src\NBroadcast\bin\$(BuildConfig)\NBroadcast.dll" />
+      <MergeAsm Include="$(MSBuildProjectDirectory)\lib\*.dll" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(MergedOutputPath)" Condition="!EXISTS($(MergedOutputPath))"/>
+    <Message Text="Merging: @(MergeAsm->'%(Filename)', ' and ') into $(MergedOutputPath)\NBroadcast.dll" />
+    <Exec Command="&quot;$(ILMerge)&quot; /ndebug /targetplatform:v4,&quot;$(MSBuildBinPath)&quot; /target:library /out:&quot;$(MergedOutputPath)\NBroadcast.dll&quot; @(MergeAsm->'&quot;%(FullPath)&quot;', ' ') " />
+  </Target>
+
+  <Target Name="MergeWuphfConsole">
+    <ItemGroup>
+      <MergeAsmWuphfConsole Include="$(MSBuildProjectDirectory)\src\Wuphf\bin\$(BuildConfig)\wuphf.exe" />
+      <MergeAsmWuphfConsole Include="$(MSBuildProjectDirectory)\src\Wuphf\bin\$(BuildConfig)\*.dll" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(WuphfMergedOutputPath)" Condition="!EXISTS($(RekallMergedOutputPath))"/>
+    <Message Text="Merging: @(MergeAsmWuphfConsole->'%(Filename)%(Extension)', ' and ') into $(WuphfMergedOutputPath)\wuphf.exe" />
+    <Exec Command="&quot;$(ILMerge)&quot; /ndebug /targetplatform:v4,&quot;$(MSBuildBinPath)&quot; /target:exe /out:&quot;$(WuphfMergedOutputPath)\wuphf.exe&quot; @(MergeAsmWuphfConsole->'&quot;%(FullPath)&quot;', ' ') " />
+  </Target>
+
+  <!--Target Name="CopyToNugetPackage">
+    <Copy SourceFiles="$(MergedOutputPath)\TotalRecall.dll" DestinationFolder="$(NugetPackageOutputPath)" />
+    <Copy SourceFiles="$(MergedOutputPath)\TotalRecall.dll" DestinationFolder="$(NugetPackageToolsPath)" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\totalrecall.targets" DestinationFolder="$(NugetPackageToolsPath)" />
+  </Target-->
+</Project>

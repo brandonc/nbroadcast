@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Configuration;
 
 namespace NBroadcast.Media
 {
@@ -29,7 +30,7 @@ namespace NBroadcast.Media
         {
             EnsureSetup();
 
-            if (!HasSetup(key) || GetVal(key) == null)
+            if (!HasVal(key) || GetVal(key) == null)
                 return String.Empty;
 
             return setup[key].ToString();
@@ -57,7 +58,7 @@ namespace NBroadcast.Media
             }
         }
 
-        protected bool HasSetup(string key)
+        protected bool HasVal(string key)
         {
             return (setup.ContainsKey(key) && setup[key] != null);
         }

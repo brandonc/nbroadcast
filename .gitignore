@@ -47,3 +47,5 @@ _ReSharper*/
 TestsContainingSecrets.cs
 NET_3_5/
 package/*.nupkg
+binaries/
+app.config

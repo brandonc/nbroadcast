@@ -38,6 +38,7 @@
       <HintPath>..\..\lib\MetaBuilders.Irc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -47,7 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\MediumElement.cs" />
+    <Compile Include="Configuration\MediumElementCollection.cs" />
+    <Compile Include="Configuration\NBroadcastMediaConfigurationSection.cs" />
     <Compile Include="Extensions\IMediumExtensions.cs" />
+    <Compile Include="Extensions\KeyValueConfigurationCollectionExtensions.cs" />
     <Compile Include="Media\Email.cs">
       <SubType>Code</SubType>
     </Compile>

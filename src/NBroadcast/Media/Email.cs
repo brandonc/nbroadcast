@@ -18,6 +18,25 @@ namespace NBroadcast.Media
             Medium<Email>.setup = setup;
         }
 
+        internal static object AutoConfigValueHelper(string key, string value)
+        {
+            try
+            {
+                switch (key)
+                {
+                    case "port":
+                        return Int32.Parse(value);
+                    case "ssl":
+                        return Boolean.Parse(value);
+                    default:
+                        return value;
+                }
+            } catch (FormatException)
+            {
+                return null;
+            }
+        }
+
         public void Dispatch(string body)
         {
             var message = new MailMessage(
@@ -29,18 +48,18 @@ namespace NBroadcast.Media
 
             var client = new SmtpClient();
 
-            if (HasSetup("server"))
+            if (HasVal("server"))
                 client.Host = GetVal("server");
 
-            if (HasSetup("port"))
+            if (HasVal("port"))
                 client.Port = GetValInt("port");
 
-            if ((HasSetup("ssl") && GetValBool("ssl")) || (!HasSetup("ssl") && client.Port == 465))
+            if ((HasVal("ssl") && GetValBool("ssl")) || (!HasVal("ssl") && client.Port == 465))
             {
                 client.EnableSsl = true;
             }
 
-            if (HasSetup("username"))
+            if (HasVal("username"))
                 client.Credentials = new NetworkCredential(
                     GetVal("username"),
                     GetValOrBlank("password")
