@@ -3,8 +3,9 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using System.Text.RegularExpressions;
 
-namespace OAuth
+namespace NBroadcast.OAuth
 {
     public class OAuthBase
     {
@@ -156,7 +157,7 @@ namespace OAuth
         /// </summary>
         /// <param name="value">The value to Url encode</param>
         /// <returns>Returns a Url encoded string</returns>
-        protected string UrlEncode(string value)
+        public string UrlEncode(string value)
         {
             StringBuilder result = new StringBuilder();
 
@@ -292,6 +293,7 @@ namespace OAuth
         {
             return GenerateSignature(url, consumerKey, consumerSecret, token, tokenSecret, httpMethod, timeStamp, nonce, SignatureTypes.HMACSHA1, out normalizedUrl, out normalizedRequestParameters);
         }
+
 
         /// <summary>
         /// Generates a signature using the specified signatureType 
