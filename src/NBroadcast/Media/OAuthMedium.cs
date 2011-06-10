@@ -11,6 +11,7 @@ namespace NBroadcast.Media
     public class OAuthMedium<T> : Medium<T>
     {
         protected string apiroot;
+        protected bool usehttps = false;
 
         private WebRequest GetRequest(string method, string path, Dictionary<string, string> param) {
             string url, normparams;
@@ -26,7 +27,7 @@ namespace NBroadcast.Media
                 sb.AppendFormat("{0}={1}", oAuth.UrlEncode(pair.Key), oAuth.UrlEncode(pair.Value));
             }
 
-            Uri uri = new Uri("http://" + apiroot + path + "?" + sb.ToString());
+            Uri uri = new Uri((usehttps ? "https://" : "http://") + apiroot + path + "?" + sb.ToString());
 
             string nonce = oAuth.GenerateNonce();
             string timeStamp = oAuth.GenerateTimeStamp();

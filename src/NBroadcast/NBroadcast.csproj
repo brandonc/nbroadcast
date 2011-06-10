@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="agsXMPP">
+      <HintPath>..\..\lib\agsXMPP.dll</HintPath>
+    </Reference>
+    <Reference Include="MetaBuilders.Irc">
+      <HintPath>..\..\lib\MetaBuilders.Irc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -49,6 +55,8 @@
     <Compile Include="Media\IMedium.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Media\Irc.cs" />
+    <Compile Include="Media\Jabber.cs" />
     <Compile Include="Media\Medium.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -56,6 +64,7 @@
     <Compile Include="Media\Twitter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Media\Yammer.cs" />
     <Compile Include="MediumSetupException.cs" />
     <Compile Include="Notice.cs" />
     <Compile Include="NoticeDispatchException.cs" />

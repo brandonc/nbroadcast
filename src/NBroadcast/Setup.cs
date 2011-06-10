@@ -50,7 +50,7 @@ namespace NBroadcast
             if (base.ContainsKey(key))
             {
                 var regex = new Regex(pattern);
-                if (regex.IsMatch(base[key].ToString()))
+                if (!regex.IsMatch(base[key].ToString()))
                     throw new ArgumentException(makeInvalidFormatMsg(key));
             }
         }
