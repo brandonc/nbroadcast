@@ -4,7 +4,6 @@ Thumbs.db
 
 #Visual Studio files
 *.obj
-*.exe
 *.pdb
 *.user
 *.aps
