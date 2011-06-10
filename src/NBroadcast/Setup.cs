@@ -24,31 +24,25 @@ namespace NBroadcast
 
         public static void AutoConfig()
         {
-            try
-            {
-                var section = (NBroadcastMediaConfigurationSection)ConfigurationManager.GetSection("nbroadcast");
+            var section = (NBroadcastMediaConfigurationSection)ConfigurationManager.GetSection("nbroadcast");
 
-                foreach (MediumElement medium in section.Media)
+            foreach (MediumElement medium in section.Media)
+            {
+                var mediumtype = Type.GetType("NBroadcast.Media." + medium.Name);
+                var helperMethod = mediumtype.GetMethod("AutoConfigValueHelper", BindingFlags.Static | BindingFlags.NonPublic);
+                var setupMethod = mediumtype.GetMethod("Setup", BindingFlags.Static | BindingFlags.Public);
+
+                var setup = new Setup();
+                foreach (KeyValueConfigurationElement el in medium.Config)
                 {
-                    var mediumtype = Type.GetType("NBroadcast.Media." + medium.Name);
-                    var helperMethod = mediumtype.GetMethod("AutoConfigValueHelper", BindingFlags.Static | BindingFlags.NonPublic);
-                    var setupMethod = mediumtype.GetMethod("Setup", BindingFlags.Static | BindingFlags.Public);
+                    object value = el.Value;
+                    if (helperMethod != null)
+                        value = helperMethod.Invoke(null, new string[] { el.Key, el.Value });
 
-                    var setup = new Setup();
-                    foreach (KeyValueConfigurationElement el in medium.Config)
-                    {
-                        object value = el.Value;
-                        if (helperMethod != null)
-                            value = helperMethod.Invoke(null, new string[] { el.Key, el.Value });
-
-                        setup.Add(el.Key, value);
-                    }
-
-                    setupMethod.Invoke(null, new object[] { setup });
+                    setup.Add(el.Key, value);
                 }
-            } catch
-            {
-                // NOP
+
+                setupMethod.Invoke(null, new object[] { setup });
             }
         }
 
@@ -101,6 +95,17 @@ namespace NBroadcast
                 {
                     throw new ArgumentOutOfRangeException(makeOutOfRangeMsg(key));
                 }
+            }
+        }
+
+        static Setup()
+        {
+            try
+            {
+                AutoConfig();
+            } catch
+            {
+                // NOP
             }
         }
     }
