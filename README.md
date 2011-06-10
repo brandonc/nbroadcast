@@ -29,6 +29,29 @@ Setting up channels is done statically as configuration.
         { "accesstokensecret", "buz" }
     });
 
+## Creating Messages
+
+Derive simple classes from Notice that describe a message and the broadcast media to use.
+
+    class ChainLetter : Notice
+    {
+        public override string Message
+        {
+            get { return "Send this message to 8 friends and something magical will happen!"; }
+        }
+
+        protected override Type[] GetMedia()
+        {
+            return new[] { typeof(Email), typeof(Twitter) /* etc... */ };
+        }
+    }
+
+## Broadcast!
+
+    new ChainLetter().Send();
+
+## Other media:
+
 ### Jabber (XMPP) ###
 
     Jabber.Setup(new Setup()
@@ -58,26 +81,5 @@ Setting up channels is done statically as configuration.
         { "accesstoken", "fiz" },
         { "accesstokensecret", "buz" }
     });
-
-## Creating Messages
-
-Derive simple classes from Notice that describe a message and the broadcast media to use.
-
-    class ChainLetter : Notice
-    {
-        public override string Message
-        {
-            get { return "Send this message to 8 friends and something magical will happen!"; }
-        }
-
-        protected override Type[] GetMedia()
-        {
-            return new[] { typeof(Email), typeof(Twitter) /* etc... */ };
-        }
-    }
-
-## Broadcast!
-
-new ChainLetter().Send();
 
   [1]: https://github.com/futuresimple/broadcast
