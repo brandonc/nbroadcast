@@ -49,10 +49,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="app.config.example" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\NBroadcast\NBroadcast.csproj">
       <Project>{82B1C40B-C007-42C6-8A4A-4235C2BD4210}</Project>
       <Name>NBroadcast</Name>
