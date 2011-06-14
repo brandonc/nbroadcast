@@ -56,7 +56,6 @@
     <Compile Include="Media\Email.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Media\Facebook.cs" />
     <Compile Include="Media\IMedium.cs">
       <SubType>Code</SubType>
     </Compile>

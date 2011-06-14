@@ -28,8 +28,6 @@ namespace NBroadcast.Media
 
         protected string GetValOrBlank(string key)
         {
-            EnsureSetup();
-
             if (!HasVal(key) || GetVal(key) == null)
                 return String.Empty;
 
@@ -60,7 +58,7 @@ namespace NBroadcast.Media
 
         protected bool HasVal(string key)
         {
-            return (setup.ContainsKey(key) && setup[key] != null);
+            return (setup != null && setup.ContainsKey(key) && setup[key] != null);
         }
     }
 }

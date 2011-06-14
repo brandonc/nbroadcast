@@ -11,8 +11,21 @@ namespace NBroadcast.Media
     {
         public static void Setup(Setup setup)
         {
-            setup.ValidateExists("consumerkey", "consumersecret", "accesstoken", "accesstokensecret");
             Medium<Yammer>.setup = setup;
+            setup.ValidateExists("consumerkey", "consumersecret", "accesstoken", "accesstokensecret");
+        }
+
+        protected override OAuthMedium<Yammer>.OAuthEndpoints Endpoints
+        {
+            get
+            {
+                return new OAuthEndpoints()
+                {
+                    RequestTokenEndpoint = "https://www.yammer.com/oauth/request_token",
+                    AccessTokenEndpoint = "https://www.yammer.com/oauth/access_token",
+                    AuthorizeEndpoint = "https://www.yammer.com/oauth/authorize"
+                };
+            }
         }
 
         public void Dispatch(string body)

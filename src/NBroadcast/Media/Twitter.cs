@@ -11,8 +11,8 @@ namespace NBroadcast.Media
     {
         public static void Setup(Setup setup)
         {
-            setup.ValidateExists("accesstoken", "accesstokensecret", "consumerkey", "consumersecret");
             Medium<Twitter>.setup = setup;
+            setup.ValidateExists("accesstoken", "accesstokensecret", "consumerkey", "consumersecret");
         }
 
         public void Dispatch(string body)
@@ -30,6 +30,18 @@ namespace NBroadcast.Media
         public Twitter()
         {
             base.apiroot = "api.twitter.com";
+        }
+
+        protected override OAuthMedium<Twitter>.OAuthEndpoints Endpoints
+        {
+            get {
+                return new OAuthEndpoints()
+                {
+                    RequestTokenEndpoint = "https://api.twitter.com/oauth/request_token",
+                    AccessTokenEndpoint = "https://api.twitter.com/oauth/access_token",
+                    AuthorizeEndpoint = "https://api.twitter.com/oauth/authorize"
+                };
+            }
         }
     }
 }

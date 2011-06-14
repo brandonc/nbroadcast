@@ -15,8 +15,8 @@ namespace NBroadcast.Media
 
         public static void Setup(Setup setup)
         {
-            setup.ValidateExists("username", "server", "password", "recipient", "recipientserver");
             Medium<Jabber>.setup = setup;
+            setup.ValidateExists("username", "server", "password", "recipient", "recipientserver");
         }
 
         public void Dispatch(string body)

@@ -12,10 +12,9 @@ namespace NBroadcast.Media
     {
         public static void Setup(Setup setup)
         {
+            Medium<Email>.setup = setup;
             setup.ValidateExists("to", "from", "subject");
             setup.ValidateRange("port", 1, 65535);
-
-            Medium<Email>.setup = setup;
         }
 
         internal static object AutoConfigValueHelper(string key, string value)

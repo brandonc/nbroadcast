@@ -82,6 +82,7 @@ namespace NBroadcast.OAuth
         protected const string OAuthNonceKey = "oauth_nonce";
         protected const string OAuthTokenKey = "oauth_token";
         protected const string OAuthTokenSecretKey = "oauth_token_secret";
+        protected const string OAuthVerifierKey = "oauth_verifier";
 
         protected const string HMACSHA1SignatureType = "HMAC-SHA1";
         protected const string PlainTextSignatureType = "PLAINTEXT";
@@ -208,7 +209,7 @@ namespace NBroadcast.OAuth
         /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>
         /// <param name="signatureType">The signature type. To use the default values use <see cref="OAuthBase.SignatureTypes">OAuthBase.SignatureTypes</see>.</param>
         /// <returns>The signature base</returns>
-        public string GenerateSignatureBase(Uri url, string consumerKey, string token, string tokenSecret, string httpMethod, string timeStamp, string nonce, string signatureType, out string normalizedUrl, out string normalizedRequestParameters)
+        public string GenerateSignatureBase(Uri url, string consumerKey, string token, string tokenSecret, string httpMethod, string timeStamp, string nonce, string signatureType, string callback, string verifier, out string normalizedUrl, out string normalizedRequestParameters)
         {
             if (token == null)
             {
@@ -248,6 +249,16 @@ namespace NBroadcast.OAuth
             if (!string.IsNullOrEmpty(token))
             {
                 parameters.Add(new QueryParameter(OAuthTokenKey, token));
+            }
+
+            if (!string.IsNullOrEmpty(callback))
+            {
+                parameters.Add(new QueryParameter(OAuthCallbackKey, UrlEncode(callback)));
+            }
+
+            if (!string.IsNullOrEmpty(verifier))
+            {
+                parameters.Add(new QueryParameter(OAuthVerifierKey, verifier));
             }
 
             parameters.Sort(new QueryParameterComparer());
@@ -291,7 +302,7 @@ namespace NBroadcast.OAuth
         /// <returns>A base64 string of the hash value</returns>
         public string GenerateSignature(Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret, string httpMethod, string timeStamp, string nonce, out string normalizedUrl, out string normalizedRequestParameters)
         {
-            return GenerateSignature(url, consumerKey, consumerSecret, token, tokenSecret, httpMethod, timeStamp, nonce, SignatureTypes.HMACSHA1, out normalizedUrl, out normalizedRequestParameters);
+            return GenerateSignature(url, consumerKey, consumerSecret, token, tokenSecret, httpMethod, timeStamp, nonce, null, null, SignatureTypes.HMACSHA1, out normalizedUrl, out normalizedRequestParameters);
         }
 
 
@@ -306,7 +317,7 @@ namespace NBroadcast.OAuth
         /// <param name="httpMethod">The http method used. Must be a valid HTTP method verb (POST,GET,PUT, etc)</param>
         /// <param name="signatureType">The type of signature to use</param>
         /// <returns>A base64 string of the hash value</returns>
-        public string GenerateSignature(Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret, string httpMethod, string timeStamp, string nonce, SignatureTypes signatureType, out string normalizedUrl, out string normalizedRequestParameters)
+        public string GenerateSignature(Uri url, string consumerKey, string consumerSecret, string token, string tokenSecret, string httpMethod, string timeStamp, string nonce, string callback, string verifier, SignatureTypes signatureType, out string normalizedUrl, out string normalizedRequestParameters)
         {
             normalizedUrl = null;
             normalizedRequestParameters = null;
@@ -316,7 +327,7 @@ namespace NBroadcast.OAuth
                 case SignatureTypes.PLAINTEXT:
                     return HttpUtility.UrlEncode(string.Format("{0}&{1}", consumerSecret, tokenSecret));
                 case SignatureTypes.HMACSHA1:
-                    string signatureBase = GenerateSignatureBase(url, consumerKey, token, tokenSecret, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, out normalizedUrl, out normalizedRequestParameters);
+                    string signatureBase = GenerateSignatureBase(url, consumerKey, token, tokenSecret, httpMethod, timeStamp, nonce, HMACSHA1SignatureType, callback, verifier, out normalizedUrl, out normalizedRequestParameters);
 
 
                     HMACSHA1 hmacsha1 = new HMACSHA1();

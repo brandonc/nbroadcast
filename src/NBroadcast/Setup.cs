@@ -26,23 +26,36 @@ namespace NBroadcast
         {
             var section = (NBroadcastMediaConfigurationSection)ConfigurationManager.GetSection("nbroadcast");
 
-            foreach (MediumElement medium in section.Media)
+            if (section != null)
             {
-                var mediumtype = Type.GetType("NBroadcast.Media." + medium.Name);
-                var helperMethod = mediumtype.GetMethod("AutoConfigValueHelper", BindingFlags.Static | BindingFlags.NonPublic);
-                var setupMethod = mediumtype.GetMethod("Setup", BindingFlags.Static | BindingFlags.Public);
 
-                var setup = new Setup();
-                foreach (KeyValueConfigurationElement el in medium.Config)
+                foreach (MediumElement medium in section.Media)
                 {
-                    object value = el.Value;
-                    if (helperMethod != null)
-                        value = helperMethod.Invoke(null, new string[] { el.Key, el.Value });
+                    var mediumtype = Type.GetType("NBroadcast.Media." + medium.Name);
+                    var helperMethod = mediumtype.GetMethod("AutoConfigValueHelper", BindingFlags.Static | BindingFlags.NonPublic);
+                    var setupMethod = mediumtype.GetMethod("Setup", BindingFlags.Static | BindingFlags.Public);
 
-                    setup.Add(el.Key, value);
+                    var setup = new Setup();
+                    foreach (KeyValueConfigurationElement el in medium.Config)
+                    {
+                        object value = el.Value;
+                        if (helperMethod != null)
+                            value = helperMethod.Invoke(null, new string[] { el.Key, el.Value });
+
+                        setup.Add(el.Key, value);
+                    }
+
+                    try
+                    {
+                        setupMethod.Invoke(null, new object[] { setup });
+                    } catch (TargetInvocationException ex)
+                    {
+                        if (ex.InnerException is ArgumentException)
+                            continue;
+
+                        throw;
+                    }
                 }
-
-                setupMethod.Invoke(null, new object[] { setup });
             }
         }
 

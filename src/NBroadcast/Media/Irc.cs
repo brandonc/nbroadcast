@@ -13,10 +13,9 @@ namespace NBroadcast.Media
 
         public static void Setup(Setup setup)
         {
+            Medium<Irc>.setup = setup;
             setup.ValidateExists("nick", "server", "channel");
             setup.ValidateRegex("channel", "^#.+");
-
-            Medium<Irc>.setup = setup;
         }
 
         public void Dispatch(string body)
