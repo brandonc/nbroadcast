@@ -111,4 +111,17 @@ XML config is also supported:
       </nbroadcast>
     </configuration>
 
+## Building from source
+
+    Run build.bat (MSBuild required). Release binaries are copied to the binaries/ folder.
+
+## Authorization
+
+nbroadcast includes an OAuth authorization helper to authorize your apps for Twitter and Yammer. Once you have a consumer key and consumer secret, use the command line utility wuphf.exe:
+
+    Usage: wuphf (options) [message]
+      -a, --authorize=(Twitter|Yammer)      Authorize an OAuth service
+
+Follow the instructions to obtain an access token and access token secret.
+
   [1]: https://github.com/futuresimple/broadcast

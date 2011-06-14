@@ -49,7 +49,7 @@
     <Exec Command="&quot;$(ILMerge)&quot; /ndebug /targetplatform:v4,&quot;$(MSBuildBinPath)&quot; /target:exe /out:&quot;$(WuphfMergedOutputPath)\wuphf.exe&quot; @(MergeAsmWuphfConsole->'&quot;%(FullPath)&quot;', ' ') " />
 
     <Copy SourceFiles="$(MSBuildProjectDirectory)\src\Wuphf\app.config.example"
-        DestinationFiles="$(WuphfMergedOutputPath)\wuphf.exe.config"
+        DestinationFiles="$(WuphfMergedOutputPath)\wuphf.exe.config.example"
         ContinueOnError="false" />
   </Target>
 
