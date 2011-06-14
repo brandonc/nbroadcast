@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <configSections>
-    <section name="nbroadcast" type="NBroadcast.Configuration.NBroadcastMediaConfigurationSection,NBroadcast"/>
+    <section name="nbroadcast" type="NBroadcast.Configuration.NBroadcastMediaConfigurationSection,wuphf"/>
   </configSections>
 
   <nbroadcast>
@@ -13,13 +13,13 @@
     </medium>
 
     <medium name="Email">
-      <add key="to" value="brandon.croft@gmail.com" />
-      <add key="from" value="brandon.croft+nbroadcast@gmail.com" />
+      <add key="to" value="someone@somewhere.com" />
+      <add key="from" value="your.name@gmail.com" />
       <add key="ssl" value="true"/>
       <add key="subject" value="Hello from unit tests" />
       <add key="server" value="smtp.gmail.com" />
       <add key="port" value="587" />
-      <add key="username" value="brandon.croft@gmail.com" />
+      <add key="username" value="your.name@gmail.com" />
       <add key="password" value="secret" />
     </medium>
   </nbroadcast>
