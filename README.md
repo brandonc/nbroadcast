@@ -124,7 +124,9 @@ nbroadcast includes an OAuth authorization helper to authorize your apps for Twi
 
 Follow the instructions to obtain an access token and access token secret.
 
-## LICENSE (BSD)
+## LICENSE
+
+The MIT License
 
 Copyright (c) 2011 Brandon Croft and contributors
 
