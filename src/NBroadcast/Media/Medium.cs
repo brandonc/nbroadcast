@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using System.Net;
 
 namespace NBroadcast.Media
 {
@@ -59,6 +60,19 @@ namespace NBroadcast.Media
         protected bool HasVal(string key)
         {
             return (setup != null && setup.ContainsKey(key) && setup[key] != null);
+        }
+
+        protected virtual void HandleWebExceptions(WebException ex)
+        {
+            HttpWebResponse resp = (HttpWebResponse)ex.Response;
+
+            switch (resp.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                    throw new NoticeDispatchException("The server returned an authorization error response. Double check your authorization credentials.");
+                default:
+                    throw new NoticeDispatchException(String.Format("The server returned an error. {0}: {1}", resp.StatusCode, resp.StatusDescription));
+            }
         }
     }
 }

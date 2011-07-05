@@ -12,7 +12,7 @@ namespace NBroadcast.Tests
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void PortNumberOutOfRangeTest()
+        public void Port_number_out_of_range_throws_ArgumentOutOfRangeException()
         {
             Email.Setup(new Setup() {
                 { "to", "someone@example.com" },
@@ -26,12 +26,33 @@ namespace NBroadcast.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void MissingSubjectTest()
+        public void Missing_subject_throws_ArgumentException()
         {
             Email.Setup(new Setup() {
                 { "to", "someone@example.com" },
                 { "from", "unittest@nbroadcast.brandoncroft.com" }
             });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NoticeDispatchException))]
+        public void Invalid_credentials_throws_NoticeDispatchException()
+        {
+            Email.Setup(new Setup() {
+                { "to", "brandon.croft@gmail.com" },
+                { "from", "brandon.croft+nbroadcast@gmail.com" },
+                { "ssl", true },
+                { "subject", "This won't be sent" },
+                { "server", "smtp.gmail.com" },
+                { "port", 587 },
+                { "username", "brandon.croft@gmail.com" },
+                { "password", "not_my_password" }
+            });
+
+            Notice test = new Notice("This won't be sent");
+            test.SetMedia(typeof(Email));
+            test.Send();
+
         }
     }
 }

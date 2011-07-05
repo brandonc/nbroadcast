@@ -64,7 +64,13 @@ namespace NBroadcast.Media
                     GetValOrBlank("password")
                 );
 
-            client.Send(message);
+            try
+            {
+                client.Send(message);
+            } catch (SmtpException ex)
+            {
+                throw new NoticeDispatchException(String.Format("The SMTP server returned an error. {0}: {1}" + ex.StatusCode.ToString(), ex.Message));
+            }
         }
     }
 }

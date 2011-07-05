@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NBroadcast.Media;
 using System.Timers;
+using System.Runtime.Remoting.Messaging;
 
 namespace NBroadcast
 {
@@ -34,41 +35,64 @@ namespace NBroadcast
 
         protected virtual Type[] GetMedia()
         {
-            return this.media;
+            if (media == null && !this.MuteExceptions)
+                throw new NoticeDispatchException("No media has been defined.");
+
+            return this.media == null ? new Type[0] : this.media;
         }
 
         public void Send()
+        {
+            DelayInternal(() =>
+            {
+                SendImpl(null);
+            });
+        }
+
+        public BroadcastAsyncResult SendAsync()
+        {
+            var ar = new BroadcastAsyncResult(this.GetMedia());
+
+            DelayInternal(() => {
+                SendImpl(ar);
+            });
+
+            return ar;
+        }
+
+        private void DelayInternal(Action callback)
         {
             if (delay != TimeSpan.Zero && delay.TotalMilliseconds > 0)
             {
                 timer = new Timer(delay.TotalMilliseconds);
                 timer.Elapsed += (object sender, ElapsedEventArgs e) =>
                 {
-                    SendImpl();
+                    callback();
                 };
                 timer.Start();
-            }
-            else
+            } else
             {
-                SendImpl();
+                callback();
             }
         }
 
-        private void SendImpl()
+        private void SendImpl(BroadcastAsyncResult ar)
         {
-            
-                foreach (Type tm in this.GetMedia())
+            foreach (Type tm in this.GetMedia())
+            {
+                var m = (IMedium)Activator.CreateInstance(tm);
+                try
                 {
-                    var m = (IMedium)Activator.CreateInstance(tm);
-                    try
-                    {
+                    if (ar != null)
+                        m.DispatchAsync(this.Message, ar);
+                    else
                         m.Dispatch(this.Message);
-                    } catch (NoticeDispatchException)
-                    {
-                        if (!MuteExceptions)
-                            throw;
-                    }
+                } catch (NoticeDispatchException)
+                {
+                    if (!MuteExceptions)
+                        throw;
                 }
+            }
         }
 
         public Notice Mute()

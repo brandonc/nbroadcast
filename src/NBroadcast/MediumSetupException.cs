@@ -8,7 +8,7 @@ namespace NBroadcast
     public class MediumSetupException : ApplicationException
     {
         public MediumSetupException()
-            : base("Medium is not setup.")
+            : base("Medium must be set up before it is used. Use either XML configuration or Type.Setup()")
         { }
 
         public MediumSetupException(string message)

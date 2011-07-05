@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Web.Script.Serialization;
 
 namespace NBroadcast.Media
 {
@@ -30,13 +31,20 @@ namespace NBroadcast.Media
 
         public void Dispatch(string body)
         {
-            var req = base.Post("/api/v1/messages.json", new Dictionary<string, string>() { { "body", body } });
-            using (WebResponse resp = req.GetResponse())
+            try
             {
-                using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
+                var req = base.Post("/api/v1/messages.json", new Dictionary<string, string>() { { "body", body } });
+                using (WebResponse resp = req.GetResponse())
                 {
-                    string s = reader.ReadToEnd();
+                    using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
+                    {
+                        var json = new JavaScriptSerializer();
+                        dynamic response = json.DeserializeObject(reader.ReadToEnd());
+                    }
                 }
+            } catch (WebException ex)
+            {
+                HandleWebExceptions(ex);
             }
         }
 

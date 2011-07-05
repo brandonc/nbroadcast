@@ -41,6 +41,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BroadcastAsyncResult.cs" />
     <Compile Include="Configuration\MediumElement.cs" />
     <Compile Include="Configuration\MediumElementCollection.cs" />
     <Compile Include="Configuration\NBroadcastMediaConfigurationSection.cs" />
