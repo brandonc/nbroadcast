@@ -49,9 +49,6 @@
   <ItemGroup>
     <Compile Include="EmailSetupTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestsContainingSecrets.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TwitterSetupTests.cs" />
   </ItemGroup>
   <ItemGroup>
