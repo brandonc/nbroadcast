@@ -66,6 +66,9 @@ namespace NBroadcast.Media
         {
             HttpWebResponse resp = (HttpWebResponse)ex.Response;
 
+            if (resp == null)
+                throw new NoticeDispatchException("The server did not respond. Please try again later.");
+
             switch (resp.StatusCode)
             {
                 case HttpStatusCode.Unauthorized:

@@ -13,6 +13,7 @@ namespace NBroadcast
 {
     public class Setup : Dictionary<string, object>
     {
+        // Simple exception message building delegates
         private Func<string, string> makeInvalidFormatMsg = 
             (key) => "Setup key \"" + key + "\" is not in the correct format.";
 
@@ -22,6 +23,7 @@ namespace NBroadcast
         private Func<string[], string> makeRequiredMsg =
             (keys) => "The following keys are required for this setup: " + String.Join<string>(", ", keys);
 
+        // This method must be called manually if `Setup` class is never instanced.
         public static void AutoConfig()
         {
             var section = (NBroadcastMediaConfigurationSection)ConfigurationManager.GetSection("nbroadcast");
@@ -31,11 +33,16 @@ namespace NBroadcast
 
                 foreach (MediumElement medium in section.Media)
                 {
+                    // AutoConfig uses reflection to call the normal setup functions of the specified `Medium`.
+                    // The optional method `AutoConfigValueHelper` can be added to a Medium class in order to convert string values.
+                    // If that method doesn't exist, string is assumed.
+
                     var mediumtype = Type.GetType("NBroadcast.Media." + medium.Name);
                     var helperMethod = mediumtype.GetMethod("AutoConfigValueHelper", BindingFlags.Static | BindingFlags.NonPublic);
                     var setupMethod = mediumtype.GetMethod("Setup", BindingFlags.Static | BindingFlags.Public);
 
                     var setup = new Setup();
+
                     foreach (KeyValueConfigurationElement el in medium.Config)
                     {
                         object value = el.Value;
@@ -50,6 +57,8 @@ namespace NBroadcast
                         setupMethod.Invoke(null, new object[] { setup });
                     } catch (TargetInvocationException ex)
                     {
+                        // `ArgumentException` is swallowed here in case an incomplete configuration is given in XML
+                        // but there is still an opportunity to use the `Setup()` routine.
                         if (ex.InnerException is ArgumentException)
                             continue;
 
@@ -59,17 +68,16 @@ namespace NBroadcast
             }
         }
 
-        public void Add(string property, Func<object> value)
-        {
-            base.Add(property, value());
-        }
+        // ### Setup validation
 
+        // Simple 'required key' validation.
         internal void ValidateExists(params string[] keys)
         {
             if (!keys.All(p => this.ContainsKey(p) && this[p] != null))
                 throw new ArgumentException(makeRequiredMsg(keys));
         }
 
+        // Callback style validation
         internal void Validate(string key, Func<object, bool> validation)
         {
             if (base.ContainsKey(key))
@@ -86,6 +94,7 @@ namespace NBroadcast
             }
         }
 
+        // Regex style validation
         internal void ValidateRegex(string key, string pattern)
         {
             if (base.ContainsKey(key))
@@ -96,6 +105,7 @@ namespace NBroadcast
             }
         }
 
+        // Integer range validation
         internal void ValidateRange(string key, int lower, int upper)
         {
             if (base.ContainsKey(key))
@@ -111,6 +121,7 @@ namespace NBroadcast
             }
         }
 
+        // Before any manual setup takes place, try to load from app/web.config
         static Setup()
         {
             try
@@ -118,7 +129,7 @@ namespace NBroadcast
                 AutoConfig();
             } catch
             {
-                // NOP
+                // Ignore any exceptions because we weren't asked to do this.
             }
         }
     }

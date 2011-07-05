@@ -5,6 +5,9 @@ using System.Text;
 using System.Web;
 using System.Text.RegularExpressions;
 
+// Code taken from OAuth demonstration class. There are modifications here.
+// http://oauth.googlecode.com/svn/code/csharp/OAuthBase.cs
+
 namespace NBroadcast.OAuth
 {
     public class OAuthBase
